@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="author" content="http://www.softwhy.com/" />
+		<link rel="stylesheet" type="text/css" href="../assets/css/layui.css" />
+		<title>商品详情</title>
+	</head>
+	<style>
+		#maindiv {
+			width: 100%;
+			margin: 53px 0 0 0px;
+			background-color: #f6f6f6;
+			height: 50px;
+		}
+		
+		.goodstitle {
+			text-overflow: ellipsis;
+			overflow: hidden;
+			width: 65%;
+			/*background-color: gray;*/
+			float: left;
+			margin: 8px 0 0 10px;
+			white-space: nowrap;
+		}
+		
+		.nowprice {
+			float: right;
+			margin: 5px 0px 0px 0px;
+			font-size: 20px;
+			color: red;
+			width: 25%;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+		
+		.beforprice {
+			width: 25%;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			margin: 25px -100px 0px 0px;
+			float: right;
+			text-decoration: line-through;
+		}
+		
+		#address {
+			margin: 10px auto;
+			background: url(img/地图.png);
+			border-radius: 10px;
+			width: 92%;
+			height: 25px;
+		}
+		
+		.demo {
+			width: 90%;
+			margin: 0 auto;
+			height: 100%;
+			max-width: 760px;
+		}
+		
+		.demo img {
+			border-radius: 10px;
+			margin: 2px auto;
+			width: 100%;
+			height: 62.5%;
+		}
+		
+		.commodityDescribe {
+			word-wrap: break-word;
+			margin: 10px auto;
+			background-color: #F3F3F3;
+			border-radius: 3px;
+			width: 90%;
+			/* height: 25px; */
+		}
+		
+		.showmore {
+			border-radius: 10px;
+			float: right;
+			font-size: 20px;
+			margin: 53px -50px;
+			display: none;
+			background-color: #009688;
+			border-radius: 10px;
+		}
+		
+		.showmore li {
+			white-space: nowrap;
+			border-radius: 10px;
+			background-color: #009688;
+			/*border:1px solid green;*/
+		}
+	</style>
+	<style>
+		.head {
+			z-index: 9999;
+			position: fixed;
+			width: 100%;
+			top: 0;
+		}
+		
+		.heda-div {
+			height: 53px;
+			background-color: #009688;
+			color: white;
+			font-size: 40px;
+			text-align: left;
+		}
+		
+		.head-div-title {
+			font-size: 25px;
+			margin: -40px auto;
+			text-align: center;
+		}
+	</style>
+	</head>
+
+	<body>
+		<div class="head">
+			<div class="heda-div">
+				<i class="layui-icon layui-icon-left" style="font-size: 25px; color: #FFFFFF;" onclick="javascript:history.go(-1);">返回</i>
+				<div class="head-div-title">商品详情</div>
+				<div id="showmore">
+					<i class="layui-icon layui-icon-more" style="margin:10px 10px;float: right;font-size: 30px; color: #ffffff;"></i>
+				</div>
+				<ul class="showmore">
+					<li id="collectGoods" onclick="collectGoods()">
+						<i class="layui-icon layui-icon-star" style="font-size: 25px; color: #FFFFFF;">收藏</i>
+					</li>
+					<li onclick="reportThis()">
+						<i class="layui-icon layui-icon-tips" style="font-size: 25px; color: #FFFFFF;">举报</i>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="layui-container" style="background-image: url(img/background.gif)">
+		<div id="maindiv">
+			<h2 id="commodityName" class="goodstitle"></h2>
+			<div id="commodityPrice" class="nowprice"></div>
+			<div id="commodityCost" class="beforprice"></div>
+		</div>
+		<div align="right" id="address">
+			<div style="margin:-2px 0 0 15px;float: left;font-size: 20px;">地址：</div>
+			<div id="commodityAddress" style="float: right;margin: 2px 10px 0 0;"></div>
+		</div>
+		<div>
+			<div style="margin: 0 0 0 20px;font-size: 20px;">商品描述</div>
+			<div id="commodityDescribe" class="commodityDescribe">这是一段描述，仅当测试。</div>
+			<div style="margin: 0 0 0 20px;font-size: 20px;">卖家手机号</div>
+			<div style="background-color: #FFFFFF;" class="commodityDescribe">
+				<i style="float: left;" class="layui-icon layui-icon-cellphone" style="font-size: 20px; color: #392f41;"></i>
+				<div id="userIphone">这是一段描述，仅当测试。</div>
+			</div>
+			<div style="margin: 0 0 0 20px;font-size: 20px;">卖家QQ</div>
+			<div style="background-color: #FFFFFF;" class="commodityDescribe">
+				<i style="float: left;color: #44cef6;" class="layui-icon layui-icon-login-qq" style="font-size: 20px; "></i>
+				<div id="userQq">这是一段描述，仅当测试。</div>
+			</div>
+		</div>
+		<div class="demo" id="images">
+		</div>
+		</div>
+		<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function() {
+				var dv = $("#showmore");
+				dv.click(function() {
+					var die = $(this);
+					if(die.next("ul").is(":hidden")) {
+						$("ul").hide(100);
+						die.next("ul").show(500);
+					} else {
+						die.next("ul").hide(500);
+					}
+				})
+			})
+		</script>
+		<script type="text/javascript">
+			function collectGoods() {
+				var id = GetQueryString("id");
+				var userName = sessionStorage.getItem("userName");
+				console.log(userName);
+				jQuery.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/Shopping/checkShopping", //处理的servlet的url
+					contentType: "application/json",
+
+					data: JSON.stringify({
+						"userIphone": userName,
+						"commodityId": id
+					}),
+					async: false,
+					dataType: "json",
+					success: function(data) {
+						console.log(data);
+						//					alert('success');
+						if(data.code == 10) {
+							var date = new Date();
+							var seperator1 = "-";
+							var seperator2 = ":";
+							var month = date.getMonth() + 1;
+							var strDate = date.getDate();
+							if(month >= 1 && month <= 9) {
+								month = "0" + month;
+							}
+							if(strDate >= 0 && strDate <= 9) {
+								strDate = "0" + strDate;
+							}
+							var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+								" " + date.getHours() + seperator2 + date.getMinutes() +
+								seperator2 + date.getSeconds();
+							var createData = currentdate;
+							$.ajax({
+								type: "post",
+								url: "http://cxuniversity.top:8010/flea/Shopping/collectionShopping",
+								async: false,
+								contentType: "application/json",
+								dataType: "json",
+								data: JSON.stringify({
+									"userIphone": userName,
+									"commodityId": id,
+									"createData": createData
+								}),
+								success: function(data) {
+									console.log(data);
+									if(data.code == 10) {
+										alert('收藏成功');
+									}
+								},
+								error: function(error) {
+									alert("收藏失败");
+
+								}
+							});
+						} else {
+							alert('你已经收藏过该商品');
+						}
+					},
+					error: function(error) {
+						alert("error");
+
+					}
+				});
+			}
+		</script>
+		<script type="text/javascript">
+			function reportThis() {
+				alert('举报成功');
+			}
+
+			function GetQueryString(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg); //search,查询？后面的参数，并匹配正则    
+				if(r != null)
+					return unescape(r[2]);
+				return null;
+			}
+			$(function() {
+				var userName = sessionStorage.getItem("userName");
+				if(userName == null){
+					var collectGoods = document.getElementById('collectGoods');
+					collectGoods.innerHTML = ``;
+				}
+				var id = GetQueryString("id");
+				console.log(id);
+				var commodityName = document.getElementById("commodityName");
+				var commodityCost = document.getElementById("commodityCost");
+				var commodityPrice = document.getElementById("commodityPrice");
+				var commodityAddress = document.getElementById("commodityAddress");
+				var images = document.getElementById("images");
+				var commodityDescribe = document.getElementById("commodityDescribe");
+				var userIphone = document.getElementById("userIphone");
+				var userQq = document.getElementById("userQq");
+				$.ajax({
+					type: "get",
+					url: "http://cxuniversity.top:8010/flea/Commodity/findOneCommodity",
+					async: false,
+					contentType: "application/json",
+					data: {
+						"id": id
+					},
+					dataType: "json",
+					success: function(data) {
+						console.log(data);
+						commodityName.innerHTML = `${data.data[0].commodityName}`;
+						commodityCost.innerHTML = `￥` + `${data.data[0].commodityCost}`;
+						commodityPrice.innerHTML = `￥` + `${data.data[0].commodityPrice}`;
+						commodityAddress.innerHTML = `${data.data[0].commodityAddress}`;
+						commodityDescribe.innerHTML = `${data.data[0].commodityDescribe}`;
+						userIphone.innerHTML = `${data.data[0].userIphone}`;
+						userQq.innerHTML = `${data.data[0].userQq}`;
+						if((data.data[0].picture1 != null) && (data.data[0].picture2 == null) && (data.data[0].picture3 == null)) {
+							images.innerHTML =
+								`<img src="http://cxuniversity.top:8010/flea/` + `${data.data[0].picture1}` + `" />`;
+						} else if((data.data[0].picture1 != null) && (data.data[0].picture2 != null) && (data.data[0].picture3 == null)) {
+							images.innerHTML =
+								`<img src="http://cxuniversity.top:8010/flea/` + `${data.data[0].picture1}` + `" />` +
+								`<img src="http://cxuniversity.top:8010/flea/` + `${data.data[0].picture2}` + `" />`;
+						} else {
+							images.innerHTML =
+								`<img src="http://cxuniversity.top:8010/flea/` + `${data.data[0].picture1}` + `" />` +
+								`<img src="http://cxuniversity.top:8010/flea/` + `${data.data[0].picture2}` + `" />` +
+								`<img src="http://cxuniversity.top:8010/flea/` + `${data.data[0].picture3}` + `" />`;
+						}
+
+					},
+					error: function(error) {
+						alert("电话号码检测失败");
+						return false;
+					}
+				});
+			})
+		</script>
+
+	</body>
+
+</html>

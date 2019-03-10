@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="assets/css/layui.css">
+		<link rel="stylesheet" href="assets/css/admin.css">
+		<link rel="stylesheet" href="css/table.css" />
+		<link rel="icon" href="/favicon.ico">
+		<title>跳蚤市场后台管理</title>
+	</head>
+
+	<body class="layui-layout-body">
+		<div class="layui-layout layui-layout-admin">
+			<div class="layui-header custom-header" id="layerDemo">
+
+				<ul class="layui-nav layui-layout-left">
+					<li class="layui-nav-item slide-sidebar" lay-unselect>
+						<a href="javascript:;" class="icon-font"><i class="ai ai-menufold"></i></a>
+					</li>
+				</ul>
+
+				<ul class="layui-nav layui-layout-right">
+					<li class="layui-nav-item">
+						<a href="javascript:;"><span id="adminName"></span></a>
+						<dl class="layui-nav-child">
+							<dd style="text-align: center;">
+								<button class="layui-btn layui-btn-normal" data-method="setTop" id="change">设置</button>
+							</dd>
+							<dd style="text-align: center;">
+								<button class="layui-btn layui-btn-normal" onclick="javascript:window.location.href='login.html'">退出</button>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+
+			<div class="layui-side custom-admin">
+				<div class="layui-side-scroll">
+
+					<div class="custom-logo">
+						<img src="assets/images/logo.png" alt="" />
+						<h1>Admin Pro</h1>
+					</div>
+					<ul id="Nav" class="layui-nav layui-nav-tree">
+						<li class="layui-nav-item">
+							<a href="javascript:;">
+								<i class="layui-icon">&#xe650;</i>
+								<em>欢迎登录</em>
+							</a>
+							<dl class="layui-nav-child">
+								<dd hidden="true">
+									<a href="core/welcome.html">欢迎登录</a>
+								</dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item">
+							<a href="javascript:;">
+								<i class="layui-icon">&#xe770;</i>
+								<em>管理员信息管理</em>
+							</a>
+							<dl class="layui-nav-child">
+								<dd>
+									<a href="core/accountNumber.html">管理员账号管理</a>
+								</dd>
+								<dd>
+									<a href="core/role.html">角色管理</a>
+								</dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item">
+							<a href="javascript:;">
+								<i class="layui-icon">&#xe657;</i>
+								<em>商品管理</em>
+							</a>
+							<dl class="layui-nav-child">
+								<dd>
+									<a href="core/goodsItems.html">商品分类管理</a>
+								</dd>
+
+								<!--<dd>
+									<a href="core/commodity.html">用户发布信息管理</a>
+								</dd>-->
+																
+								<dd>
+									<a href="core/commodity .html">商品管理</a>
+								</dd>
+								
+								<!--<dd>
+									<a href="views/operaterule.html">权限配置</a>
+								</dd>-->
+							</dl>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="layui-body">
+				<div class="layui-tab app-container" lay-allowClose="true" lay-filter="tabs">
+					<ul id="appTabs" class="layui-tab-title custom-tab"></ul>
+					<div id="appTabPage" class="layui-tab-content"></div>
+				</div>
+			</div>
+			<div class="mobile-mask"></div>
+		</div>
+		<script src="assets/layui.js"></script>
+		<script src="index.js" data-main="home"></script>
+
+	</body>
+
+</html>

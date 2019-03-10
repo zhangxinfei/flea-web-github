@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>添加管理员</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../assets/css/layui.css" media="all">
+		<META http-equiv=Content-Type content="text/html;charset=utf-8">
+		<link rel="stylesheet" href="../assets/css/view.css" />
+		<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+	</head>
+
+	<body>
+		<div class="layui-content">
+			<div class="layui-row">
+				<div class="layui-card">
+					<form id="form" class="layui-form" onsubmit="return checkPost();">
+						<div class="layui-form-item"><br/>
+							<label class="layui-form-label">管理员姓名</label>
+							<div class="layui-input-block">
+								<input id="adminName" AUTOCOMPLETE="OFF" type="text" name="adminName" required lay-verify="required" placeholder="请输入管理员姓名" class="layui-input" lay-verify="adminname" onblur="checkName()">
+								<div id="checkName">
+									<!--<font color="red">用户名已存在</font>-->
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">管理员密码</label>
+							<div class="layui-input-inline">
+								<!--<input type="password" id="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">-->
+								<input id="password" name="password" name="password" class="layui-input" type="password" placeholder="请输入密码" autocomplete="off" lay-verify="pass">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">确认密码</label>
+							<div class="layui-input-inline">
+								<input type="password" id="password1" name="password1" required lay-verify="required" placeholder="请再次输入密码" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">电话号码</label>
+							<div class="layui-input-block">
+								<input id="phone" name="phone" class="layui-input" type="tel" autocomplete="off" lay-verify="required|phone" onblur="checkPhone()">
+								<div id="checkPhone">
+									<!--<font color="red">电话号码已存在</font>-->
+								</div>
+							</div>
+
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">管理员角色</label>
+							<div id="chk" class="layui-input-block">
+								<!--
+                                	作者：1300922025@qq.com
+                                	时间：2018-10-22
+                                	描述：动态添加复选框
+                                	<input type="checkbox" name="like[read]" title="123">
+                                	<input type="checkbox" name="like[read]" title="123">
+                                -->
+
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="formDemo" onsubmit="checkbox()">立即添加</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script src="../assets/layui.js" charset="utf-8"></script>
+		<script src="../js/jquery-3.3.1.min.js"></script>
+		<!-- 添加管理员的js-->
+		<script src="../addAdmin.js"></script>
+
+	</body>
+
+</html>

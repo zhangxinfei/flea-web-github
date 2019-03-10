@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../assets/css/layui.css" media="all">
+		<META http-equiv=Content-Type content="text/html;charset=utf-8">
+		<link rel="stylesheet" href="../assets/css/view.css" />
+	</head>
+
+	<body onload="go()">
+		<div class="layui-content">
+			<br />
+			<div class="layui-row">
+				<div class="layui-card">
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">角色名称</label>
+						<div class="layui-input-block">
+							<input id="roleName" type="text" required="required" class="layui-input" lay-verify="title" autocomplete="off"></input>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">角色信息</label>
+						<div class="layui-input-block">
+							<input id="roleNnfo" type="text" required="required" class="layui-input" lay-verify="title" autocomplete="off"></input>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">角色等级</label>
+						<div class="layui-input-block">
+							<select id="roleLevel" style="width: 150px; height: 40px;">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">角色权限</label>
+						<div id="chk" class="layui-input-block">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit lay-filter="formDemo" onclick="add()">立即修改</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery-3.3.1.min.js"></script>
+		<script src="../assets/layui.js" charset="utf-8"></script>
+		<script>
+			function go() {
+				//				var othis = $(this),
+				//					method = othis.data('method');
+				//				active[method] ? active[method].call(this, othis) : '';
+				var chk = document.getElementById('chk'); //获取页面写好的标签 
+				var html = ''; //定义html
+				var id = sessionStorage.getItem('id');
+				var roleName = sessionStorage.getItem('roleName');
+				var roleNnfo = sessionStorage.getItem('roleNnfo');
+				var roleLevel = sessionStorage.getItem('roleLevel');
+				document.getElementById('roleName').value = roleName;
+				document.getElementById('roleNnfo').value = roleNnfo;
+				$.ajax({
+					type: "post",
+					contentType: 'application/json',
+					url: "http://cxuniversity.top:8010/flea/Permission/selectALLPermission",
+					async: false,
+					dataType: "json",
+					data: JSON.stringify({
+						"permissionList": localStorage.getItem('permissionList'),
+						"permissionName": "CKQX"
+					}),
+					success: function(data) {
+						//						alert(JSON.stringify(data));
+						for(var i = 0; i < data.data.length; i++) {
+							html += '<input lay-skin="primary" type="checkbox" name="permission" value="' + data.data[i].id + '" >' + data.data[i].permission + ''
+						}
+						//如果传送成功，后端会返回data
+						chk.innerHTML = html;
+					},
+					error: function(error) {
+						alert("a");
+					}
+				});
+			}
+		</script>
+		
+		<script>
+			function add() {
+				if(document.getElementById("roleName").value != '' && document.getElementById("roleNnfo").value != '' && document.getElementById("roleLevel").value != '') {
+					localStorage.setItem('roleName', document.getElementById("roleName").value);
+					localStorage.setItem('roleNnfo', document.getElementById("roleNnfo").value);
+					localStorage.setItem('roleLevel', document.getElementById("roleLevel").value);
+					obj = document.getElementsByName("permission");
+					var seperator1 = "-";
+					var seperator2 = ":";
+					var date = new Date();
+					var month = date.getMonth() + 1;
+					var strDate = date.getDate();
+					var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+						" " + date.getHours() + seperator2 + date.getMinutes() +
+						seperator2 + date.getSeconds();
+					var id = parseInt(sessionStorage.getItem('id'));
+					var roleLevel = parseInt(localStorage.getItem('roleLevel'));
+					check_val = [];
+					for(var i = 0, len = obj.length; i < len; i++) {
+						if(obj[i].checked) {
+							var signAgainReq = new Object();
+							signAgainReq.permissionId = parseInt(obj[i].value);
+							check_val.push(signAgainReq);
+						}
+					}
+					$.ajax({
+						url: 'http://cxuniversity.top:8010/flea/Role/updateRole',
+						contentType: "application/json",
+						data: JSON.stringify({
+							'id': id,
+							'roleName': localStorage.getItem('roleName'),
+							'roleNnfo': localStorage.getItem('roleNnfo'),
+							'roleLevel': roleLevel,
+							'permissionName': 'XGJS',
+							'permissionRoleList': check_val,
+							'permission': localStorage.getItem('rolePermission'),
+							"permissionList": localStorage.getItem('permissionList'),
+							'createData' : currentdate,
+							'createBy' : localStorage.getItem('adminName')
+						}), //请求的附加参数，用json对象
+						method: 'POST',
+						success: function(res) {
+							layer.closeAll();
+						},
+						error: function() {
+							post_adduser = false; //AJAX失败也需要将标志标记为可提交状态
+							//						layer.close(loading);
+							//										layer.msg("添加失败", {
+							//											icon: 5
+							//										});
+						}
+					});
+				} else {
+					alert('请输入完整的修改信息');
+				};
+			}			
+		</script>
+
+	</body>
+
+</html>

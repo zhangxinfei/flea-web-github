@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title><br />
+		<style>
+			.weui_btn_disabled.weui_btn_default {
+				color: #C9C9C9;
+				border: 1px solid #C9C9C9;
+			}
+			
+			.weui_btn_disabled.weui_btn_default {
+				color: #C9C9C9;
+			}
+			
+			.weui_btn_plain_primary {
+				color: #04BE02;
+				border: 1px solid #04BE02;
+			}
+			
+			.weui_btn_disabled {
+				color: rgba(255, 255, 255, .6);
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="weui_cell">
+			<div class="weui_cell_hb">
+				<label class="weui_label">验证码</label>
+			</div>
+			<div class="weui_cell_bd weui_cell_primary">
+				<input oninput="check_finish()" type="text" placeholder="请输入验证码" class="weui_input <if condition='$vo.is_need eq 1'> is_must</if>" id="code" name="code" />
+			</div>
+			<div class="weui_cell_ft register_code">
+				<a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_plain_primary" id="get_code_btn" style="display: none;">发送验证码</a>
+			</div>
+		</div>
+		<script>
+			$('#get_code_btn').click(function() {
+				var phone = $('#phone').val(); //获取输入的手机号码
+				if(!$('#get_code_btn').hasClass('weui_btn_default')) { //判断是否有这个class名字
+					$.Dialog.loading();
+					var reg_phone = /1\d{10}/;
+					if(!reg_phone.test(phone)) { //验证手机是否符合格式
+						$.Dialog.fail("填写手机号");
+						return false;
+					}
+					$('#get_code_btn').addClass('weui_btn_disabled weui_btn_default');
+					$('#get_code_btn').removeClass('weui_btn_plain_primary');
+					$.post(get_code_url, {
+							phone: phone
+						}, //发起请求
+						function(data) {
+							if(data.result == 1) {
+								$.Dialog.success("发送成功");
+								var leftTime = 60;
+								var timer = setInterval(function() { //倒计时
+									$('#get_code_btn').text(leftTime + '秒');
+									leftTime--;
+									if(leftTime == 0) { //重新发送
+										clearInterval(timer);
+										$('#get_code_btn').removeClass('weui_btn_disabled weui_btn_default').text('重新获取');
+										$('#get_code_btn').addClass('weui_btn_plain_primary');
+									}
+								}, 1000);
+							} else {
+								$('#get_code_btn').removeClass('weui_btn_disabled weui_btn_default').text('重新获取');
+								$('#get_code_btn').addClass('weui_btn_plain_primary');
+								alert(data.msg);
+								$.Dialog.close();
+								//$.Dialog.fail(data.msg);
+							}
+						}
+					).error(
+						function() { //发送失败
+							$('#get_code_btn').removeClass('weui_btn_disabled weui_btn_default').text('重新获取');
+							$('#get_code_btn').addClass('weui_btn_plain_primary');
+							$.Dialog.fail("系统繁忙");
+						}
+					);
+				}
+			});
+		</script>
+	</body>
+
+</html>

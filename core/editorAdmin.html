@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>layui</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../assets/css/layui.css" media="all">
+		<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+	</head>
+
+	<body>
+		<form class="layui-form" action="" onsubmit="return checkPost1()" lay-filter="example">
+			<br/>
+			<div class="layui-form-item">
+				<label class="layui-form-label">管理员姓名</label>
+				<div class="layui-input-block">
+					<input id="adminName" name="username" class="layui-input" type="text" placeholder="请输入标题" autocomplete="off" lay-verify="title">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">电话号码</label>
+				<div class="layui-input-block">
+					<input id="adminIphone" name="phone" class="layui-input" type="tel" autocomplete="off" lay-verify="required|phone" onblur="checkPhone()">
+					<div id="checkPhone">
+						<!--<font color="red">电话号码已存在</font>-->
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">管理员角色</label>
+				<div id="chk" class="layui-input-block">
+
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">管理员状态</label>
+				<div class="layui-input-block">
+					<input type="radio" name="status" value="10" title="存在">
+					<input type="radio" name="status" value="20" title="不存在" checked>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-filter="demo1" onsubmit="checkbox()">立即提交</button>
+				</div>
+			</div>
+		</form>
+
+		<script src="../assets/layui.js" charset="utf-8"></script>
+		<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function() {
+				var form = layui.form,
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate;
+
+				//日期
+				laydate.render({
+					elem: '#date'
+				});
+				laydate.render({
+					elem: '#date1'
+				});
+
+				//创建一个编辑器
+				var editIndex = layedit.build('LAY_demo_editor');
+
+				//自定义验证规则
+				form.verify({
+					title: function(value) {
+						if(value.length < 5) {
+							return '标题至少得5个字符啊';
+						}
+					},
+				});
+
+				//监听提交
+				form.on('submit(demo1)', function(data) {
+					layer.alert(JSON.stringify(data.field), {
+						title: '最终的提交信息'
+					})
+					return false;
+				});
+
+			});
+		</script>
+		<script src="../js/jquery-3.3.1.min.js"></script>
+		<script>
+			function checkPost1() {
+				var adminName = document.getElementById("adminName").value;
+				var adminiphone = document.getElementById('adminIphone').value;
+				var adminId = parseInt(sessionStorage.getItem("adminId"));
+//				var obj2 = document.getElementById('status');
+//				
+//				for(var i = 0; i < obj2.length; i++) {
+//					if(obj2[i].checked) {
+//						var status = obj2[i].value;
+//					}
+//				}
+				var status = parseInt($("input[type='radio']:checked").val());
+				//				var adminNumber = document.getElementById("password").value;
+				var obj = document.getElementsByName('roleName'); //选择所有name="'roleName'"的对象，返回数组 
+				//取到对象数组后，我们来循环检测它是不是被选中 
+				var id = [];
+				//	for(var i = 0; i < obj.length; i++) {
+				//		if(obj[i].checked) roleName += obj[i].value + ','; //如果选中，将value添加到变量roleName中 
+				//	}
+				for(var i = 0, len = obj.length; i < len; i++) {
+					if(obj[i].checked) {
+						var signAgainReq = new Object();
+						signAgainReq.id = parseInt(obj[i].value);
+						id.push(signAgainReq);
+					}
+
+				}
+				//那么现在来检测s的值就知道选中的复选框的值了
+				number = 0;
+				var ckbox = document.getElementsByName("roleName");
+				for(i = 0; i < ckbox.length; i++) {
+					if(ckbox[i].checked)
+						number++;
+					else
+						number = number;
+				}
+				if(number <= 0) {
+					alert("请选择管理员角色！");
+					return false;
+					//document.execCommand('Refresh');
+				}
+
+				if($("#password").val() != $("#password1").val()) {
+					alert("两次输入的密码不一致");
+					return false;
+				}
+				//验证用户名是否重复的ajax
+				jQuery.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/admin/selectRepeat", //处理的servlet的url
+					contentType: "application/json",
+
+					data: JSON.stringify({
+						"adminName": adminName
+					}),
+					async: false,
+					dataType: "json",
+					success: function(data) {
+						//验证电话号码的ajax
+						jQuery.ajax({
+							type: "post",
+							url: "http://cxuniversity.top:8010/flea/admin/selectRepeat", //处理的servlet的url
+							contentType: "application/json",
+
+							data: JSON.stringify({
+								"adminIphone": adminiphone
+							}),
+							async: false,
+							dataType: "json",
+							success: function(data) {
+								//alert("succ");
+								//提交表单的ajax
+								var seperator1 = "-";
+								var seperator2 = ":";
+								var date = new Date();
+								var month = date.getMonth() + 1;
+								var strDate = date.getDate();
+								var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+									" " + date.getHours() + seperator2 + date.getMinutes() +
+									seperator2 + date.getSeconds();
+								jQuery.ajax({
+									type: "post",
+									url: "http://cxuniversity.top:8010/flea/admin/updateAdmin", //处理的servlet的url
+									contentType: "application/json",
+
+									data: JSON.stringify({
+										'permissionList': localStorage["permissionList"],
+										"adminStatus":status,
+										"permissionName":"XGGLY",
+										"updateBy": localStorage.getItem('adminName'),
+										"updateData": currentdate,
+										"adminName": adminName,
+										"adminIphone": adminiphone,
+										"id":adminId,
+										"roleId": id
+									}),
+									async: false,
+									dataType: "json",
+									success: function(data) {
+										//								alert("succ");
+										alert("修改成功！");
+										window.close();
+									},
+									error: function(error) {
+										alert(JSON.stringify(data));
+										alert("update error");
+										return false;
+										//							$("#adminName").trigger("focus");
+										//						document.getElementById("adminName").focus();
+									}
+								});
+							},
+							error: function(error) {
+								alert("phone error");
+								return false;
+								//							$("#adminName").trigger("focus");
+								//						document.getElementById("adminName").focus();
+							}
+						});
+					},
+					error: function(error) {
+						alert("name error");
+						return false;
+						//							$("#adminName").trigger("focus");
+						//						document.getElementById("adminName").focus();
+					}
+				});
+			}
+		</script>
+		<script>
+			function checkName() {
+				var adminName = document.getElementById('adminName').value;
+				var checkName = document.getElementById("checkName");
+				if(adminName == '') {
+					var html = '';
+					html += '<font color="red">请输入用户名</font>';
+					checkName.innerHTML = html;
+				} else {
+					var html = '';
+					jQuery.ajax({
+						type: "post",
+						url: "http://cxuniversity.top:8010/flea/admin/selectRepeat", //处理的servlet的url
+						contentType: "application/json",
+
+						data: JSON.stringify({
+							"adminName": adminName
+						}),
+						async: false,
+						dataType: "json",
+						success: function(data) {
+							if(!data.success) {
+								//								alert("succ");
+								html += '<font color="red">用户名已存在</font>';
+								checkName.innerHTML = html;
+							} else {
+								//								alert("faled");
+								html += '<font color="green">暂无该用户名，可以使用</font>';
+								checkName.innerHTML = html;
+							}
+
+						},
+						error: function(error) {
+							//							alert("error");
+							return false;
+							//							$("#adminName").trigger("focus");
+							//						document.getElementById("adminName").focus();
+						}
+					});
+				}
+
+			}
+			$(function() {
+				var adminNameEditor = sessionStorage.getItem("adminNameEditor");
+				var adminIphoneEditor = sessionStorage.getItem("adminIphoneEditor");
+				var adminNameInput = document.getElementById("adminName");
+				var adminIphoneInput = document.getElementById("adminIphone");
+				adminNameInput.value = adminNameEditor;
+				adminIphoneInput.value = adminIphoneEditor;
+				var permissionList = localStorage.getItem("permissionList");
+				var adminParamsList = localStorage.getItem("adminParamsList");
+				var permissionName = "CKGLYJS";
+				var chk = document.getElementById('chk'); //获取页面写好的标签 
+				var html = ''; //定义html
+				jQuery.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/Role/selectAllRole", //处理的servlet的url
+					contentType: "application/json",
+
+					data: JSON.stringify({
+						"permissionName": permissionName,
+						"permissionList": permissionList,
+						"adminParamsList": adminParamsList
+					}),
+					async: false,
+					dataType: "json",
+					success: function(data) {
+						//alert(data.data[0].id);
+						//alert(data.data[1].adminName);
+						if(!data.success) {
+							alert("您还不能创建管理员");
+							window.close;
+						} else {
+							for(i = 0; i < data.data.length; i++) {
+
+								html += '<input lay-skin="primary" type="checkbox" value="' + data.data[i].id + '" name="roleName" title="' + data.data[i].roleName + '">'
+
+							}
+							chk.innerHTML = html; //插入html到id=chk的div标签
+						}
+
+					},
+					error: function(error) {
+						alert("error");
+
+					}
+				});
+			});
+			//alert(adminName1);
+		</script>
+	</body>
+
+</html>

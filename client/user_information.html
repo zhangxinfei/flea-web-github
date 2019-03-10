@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="author" content="http://www.softwhy.com/" />
+		<link rel="stylesheet" type="text/css" href="../assets/css/layui.css" />
+		<title>用户信息</title>
+	</head>
+	</head>
+	<style>
+		.head{
+			z-index:9999;
+			position:fixed;
+			width:100%;
+			top:0;
+		}
+		.heda-div{
+			height: 53px;
+			background-color: #009688;
+			color: white;
+			font-size: 40px;
+			text-align: left;
+		}
+		.head-div-title{
+			font-size: 25px;
+			margin: -38px auto;
+			text-align:center;
+		}
+		.showmore {
+			border-radius: 10px;
+			float: right;
+			font-size: 20px;
+			margin: 53px -50px;
+			display: none;
+			background-color: #009688;
+			border-radius: 10px;
+		}
+		.showmore li {
+			white-space: nowrap;
+			border-radius: 10px;
+			background-color: #009688;
+			/*border:1px solid green;*/
+		}
+	</style>
+	<script src="../js/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			var dv = $("#showmore");
+			dv.click(function() {
+				var die = $(this);
+				if(die.next("ul").is(":hidden")) {
+					$("ul").hide(100);
+					die.next("ul").show(500);
+				} else {
+					die.next("ul").hide(500);
+				}
+			})
+		})
+	</script>
+	<script>
+		function changeInformation(){
+			alert('此功能正处于测试阶段');
+		}
+		function aboutUs(){
+			alert('此功能正处于测试阶段');
+		}
+		$(function (){
+			var username = sessionStorage.getItem('userName');
+			var maindiv = document.getElementById('maindiv');
+			var shoremore = document.getElementById('showmore');
+			console.log();
+			if(username==null){
+				shoremore.innerHTML = ``;
+				maindiv.innerHTML = 
+				`<div style='margin: 10px auto;text-align: center;' id="logintip">请先<a style='color: #1b79dd;' href = "login.html">登录</a></div>`;
+			}else{
+			var userName = document.getElementById('userName');
+			var userIphone = document.getElementById('userIphone');
+			var email = document.getElementById('email');
+				$.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/user/Customer/findUserAll?username="+username, //处理的servlet的url
+					contentType: "application/json",
+					async: false,
+					dataType: "json",
+					success: function(data) {
+						console.log(data);
+						userName.innerHTML = `${data.data[0].username}`;
+						userIphone.innerHTML = `${data.data[0].username}`;
+						email.innerHTML = `${data.data[0].email}`;
+					},
+					error: function(error) {
+						alert("error");
+	
+					}
+				});
+			}
+		})
+	</script>
+	<style>
+		#maindiv{
+			font-size: 20px;
+		}
+		#username-title{
+			margin: 10px 0px 0px 20px;
+    		font-size: 20px;
+		}
+		.username{
+			float: right;
+		    width: 30%;
+		    margin: -20px 15% 0px 0px;
+		    font-size: 15px;
+		}
+	</style>
+	<body>
+		<div class="head">
+			<div class="heda-div">
+				<i class="layui-icon layui-icon-left" style="font-size: 25px; color: #FFFFFF;" onclick="javascript:history.go(-1);">返回</i>
+				<div class="head-div-title">我的信息</div>
+				<div id="showmore">
+					<i class="layui-icon layui-icon-more" style="margin:10px 10px;float: right;font-size: 30px; color: #ffffff;"></i>
+				</div>
+				
+				<ul class="showmore">
+					<li onclick="changeInformation()">
+						<i class="layui-icon layui-icon-edit" style="font-size: 20px; color: #FFFFFF;">修改信息</i>
+					</li>
+					<li onclick="aboutUs()">
+						<i class="layui-icon layui-icon-about" style="font-size: 20px; color: #FFFFFF;">关于我们</i>
+					</li>
+				</ul>
+			</div>
+			<div id="maindiv">
+				<div>
+					<div id="username-title">
+					<i class="layui-icon layui-icon-username" style="font-size: 25px; color: #000000;">用户名</i>
+					</div>
+					<div class="username" id="userName">1111</div>
+				</div>
+				<div>
+					<div id="username-title">
+						<i class="layui-icon layui-icon-cellphone-fine" style="font-size: 20px; color: #000000;">手机号码</i>
+					</div>
+					<div class="username" id="userIphone">13009220252</div>
+				</div>
+				<div>
+					<div id="username-title">
+						<i class="layui-icon layui-icon-release" style="font-size: 20px; color: #000000;">邮箱</i>
+					</div>
+					<div class="username" id="email">13009220252@qq.com</div>
+				</div>
+				<div onclick="window.location='my_goods.html'" style="background-color: lightblue;">
+					<div id="username-title">
+						<i class="layui-icon layui-icon-template-1" style="font-size: 20px; color: #000000;">我的发布</i>
+					</div>
+					<div style="margin: -24px 0px 0px 0px;float: right;"><i class="layui-icon layui-icon-right" style="font-size: 20px; color: #000000;"></i></div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

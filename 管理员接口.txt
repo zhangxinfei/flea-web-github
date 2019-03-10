@@ -1,0 +1,4 @@
+查询管理员（传入的值全部为json）：permissionList 在session中，permissionName权限编码名称
+查看全部商品分类（传入的值全部为json）：permissionList 在session中，permissionName权限编码名称
+查看角色信息（传入的值全部为json）：permissionList 在session中，permissionName权限编码名称,
+roleID角色ID

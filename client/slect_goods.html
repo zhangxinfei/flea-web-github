@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="author" content="http://www.softwhy.com/" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>查找商品</title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="../assets/css/layui.css" />
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<link rel="stylesheet" href="css/photo.css" />
+	</head>
+	<!-- 在头部引入bootstrap的css包与js包 -->
+	<script>
+		(function(doc, win) {
+			var docEl = doc.documentElement,
+				resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+				recalc = function() {
+					var clientWidth = docEl.clientWidth;
+					if(!clientWidth) return;
+					if(clientWidth >= 640) {
+						docEl.style.fontSize = '100px';
+					} else {
+						docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+					}
+				};
+			if(!doc.addEventListener) return;
+			win.addEventListener(resizeEvt, recalc, false);
+			doc.addEventListener('DOMContentLoaded', recalc, false);
+		})(document, window);
+	</script>
+	<style>
+		.head{
+			z-index:9999;
+			position:fixed;
+			width:100%;
+			top:0;
+		}
+		.heda-div{
+			height: 53px;
+			background-color: #009688;
+			color: white;
+			font-size: 40px;
+			text-align: left;
+		}
+		.head-div-title{
+			font-size: 25px;
+			margin: -38px auto;
+			text-align:center;
+		}
+	</style>
+	<body>
+
+		<div class="">
+		<div class="head">
+			<div class="heda-div">
+				<i class="layui-icon layui-icon-left" style="font-size: 25px; color: #FFFFFF;" onclick="javascript:history.go(-1);">返回</i>
+				<div class="head-div-title">搜索信息</div>
+			</div>
+		</div>
+			<div class="layui-container" id="demo" style="overflow-y:scroll;" class="layui-row">
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<ul id="typenav" style="overflow-x: scroll;white-space: nowrap;" class="flow-default layui-nav layui-bg-green" lay-filter="">
+				</ul>
+				<ul id="maxdiv">
+				</ul>
+			</div>
+				<br />
+				<br />
+				<br />
+				<script src="../assets/layui.js"></script>
+				<script>
+					layui.use('flow', function(){
+					  var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+					  var flow = layui.flow;
+					  var commodityName = sessionStorage.getItem('commodityName');
+					  console.log(commodityName);
+					  flow.load({
+					    elem: '#maxdiv' //指定列表容器
+					    ,isAuto: false
+    					,isLazyimg: true
+					    ,done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+					      var lis = [];
+					      //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+					      $.get('http://cxuniversity.top:8010/flea/Commodity/findCommodityBymohu?page='+page+'&commodityName='+commodityName, function(res){
+					        //假设你的列表返回在data集合中
+//					        alert(JSON.stringify(res.data));
+					        console.log(res);
+					        layui.each(res.data, function(index, item){
+					        	
+					          lis.push(
+					          	`<li class="layui-col-xs6 layui-col-sm6 layui-col-md4" onclick="window.location='goods_details.html?id=`+`${res.data[index].id}`+`';">`+
+									`<div class="grid-demo grid-demo-bg1 surface-div1">`+
+										`<div id="surface-div1">`+
+											`<img lay-src="`+
+											`http://cxuniversity.top:8010/flea/`+
+											`${item.picture1}`+
+											`" class="surface-img" />`+
+										`</div>`+
+										`<div style="font-size: 15px;">`+
+											`<div style="float:left;width: 50%;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">&nbsp;&nbsp;${res.data[index].commodityName}</div>`+
+											`<div style="width: 45%;overflow: hidden;text-overflow: ellipsis;color: red;float: right;margin: 0 0 0 0">￥${res.data[index].commodityPrice}</div>`+
+										`</div>`+
+									`</div>`+
+								`</li>`
+					          );
+					        }); 
+					        
+					        //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+					        //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+					        next(lis.join(''), page < Math.ceil(res.count/10));    
+					      });
+					    }
+					  });
+					});
+			    </script>
+				<script type="text/javascript">
+				</script>
+	</body>
+
+</html>

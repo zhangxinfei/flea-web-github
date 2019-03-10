@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="author" content="http://www.softwhy.com/" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>上传图片</title>
+	</head>
+	<link rel="stylesheet" href="../assets/css/layui.css" media="all">
+	<link rel="stylesheet" href="css/webuploader.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<body>
+		<style>
+			.head {
+				z-index: 9999;
+				position: fixed;
+				width: 100%;
+				top: 0;
+			}
+			
+			.heda-div {
+				height: 53px;
+				background-color: #009688;
+				color: white;
+				font-size: 40px;
+				text-align: left;
+			}
+			
+			.head-div-title {
+				font-size: 25px;
+				margin: -38px auto;
+				text-align: center;
+			}
+		</style>
+		<div class="head">
+			<div class="heda-div">
+				<i class="layui-icon layui-icon-left" style="font-size: 25px; color: #FFFFFF;" onclick="javascript:history.go(-1);">返回</i>
+				<div class="head-div-title">上传图片</div>
+			</div>
+		</div>
+		<br />
+		<br />
+		<br />
+		<br />
+		<div id="wrapper">
+			<div id="container">
+				<!--头部，相册选择和格式选择-->
+
+				<div id="uploader">
+					<div class="queueList">
+						<div id="dndArea" class="placeholder">
+							<div id="filePicker"></div>
+							<p style="margin: 70px 0 0 0;">最多选择1张照片</p>
+						</div>
+						<div style="font-size: 15px;">
+							由于资金问题，服务器配置较低，暂只支持一张3MB以下jpg，gif，或jpeg格式图片。（后续升级可能会增加照片数量）<br />
+							若格式不支持可以点击<a href="http://pic.55.la">这里</a>进行格式转换,或点击<a href="http://www.gaitubao.com/">这里</a>改变大小。<br />
+							点击照片可进行操作。
+						</div>
+					</div>
+					<div class="statusBar" style="display:none;">
+						<div class="progress">
+							<span class="text">0%</span>
+							<span class="percentage"></span>
+						</div>
+						<div class="info"></div>
+						<div class="btns">
+							<div id="filePicker2"></div>
+							<div class="uploadBtn">开始上传</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var maxdiv = document.getElementById('wrapper');
+			if(sessionStorage.getItem('userName')==null){
+				maxdiv.innerHTML = `<div style='margin: 10px auto;text-align: center;' id="logintip">请先<a style='color: #1b79dd;' href = "login.html">登录</a></div>`;
+			}
+		</script>
+		<script type="text/javascript" src="../js/jquery-3.3.1.js"></script>
+		<script type="text/javascript" src="js/webuploader.js"></script>
+		<script type="text/javascript" src="js/upload.js"></script>
+	</body>
+
+</html>

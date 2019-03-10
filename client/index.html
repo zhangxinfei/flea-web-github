@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="author" content="http://www.softwhy.com/" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>二手市场主页</title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="../assets/css/layui.css" />
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<link rel="stylesheet" href="css/photo.css" />
+	</head>
+	<!-- 在头部引入bootstrap的css包与js包 -->
+	<script>
+		(function(doc, win) {
+			var docEl = doc.documentElement,
+				resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+				recalc = function() {
+					var clientWidth = docEl.clientWidth;
+					if(!clientWidth) return;
+					if(clientWidth >= 640) {
+						docEl.style.fontSize = '100px';
+					} else {
+						docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+					}
+				};
+			if(!doc.addEventListener) return;
+			win.addEventListener(resizeEvt, recalc, false);
+			doc.addEventListener('DOMContentLoaded', recalc, false);
+		})(document, window);
+	</script>
+	<script>
+		function selectmohu() {
+			var commodityName = document.getElementById('demoReload').value;
+			console.log(commodityName);
+			sessionStorage.setItem("commodityName", commodityName);
+			window.location.href = "slect_goods.html";
+		}
+	</script>
+
+	<body>
+		<style>
+			#goTop{
+				    text-decoration: none;
+				    right: 10px;
+				    bottom: 68px;
+				    width: 40px;
+				    height: 38px;
+				    z-index: 9999;
+			}
+		</style>
+		<script>
+			
+			function backTop () {
+			  window.scrollBy(0, -100);
+			 
+			  scrolldelay = setTimeout('backTop()', 10);
+			 
+			  var sTop = document.documentElement.scrollTop + document.body.scrollTop;
+			 
+			  if (sTop === 0) {
+			    clearTimeout(scrolldelay);
+			  }
+			}
+		</script>
+		<script>
+			function goTop() {
+ 
+				$(window).scroll(function() {
+					var $scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop; //兼容浏览器
+					if($scrollTop > 500) { //滚动高度可调
+						$("#goTop").show();
+					} else {
+						$("#goTop").hide();
+					};
+				})
+			}
+	 
+			goTop();
+		</script>
+		<div class="layui-container" style="height: 100%;background-image: url(img/background.gif)">
+			<div style="z-index:9999;position:fixed;width:100%;top:0;">
+
+				<div style="background-color: white;">
+					<br />
+					<table>
+						<tr>
+							<td><input style="font-size:0.3rem;width: 4.27rem;height: 0.6rem; border-radius: 20px;" class="layui-input" name="keyword" id="demoReload" autocomplete="off"></td>
+							<td>&nbsp;&nbsp;&nbsp;</td>
+							<td>
+								<input type="button" onclick="selectmohu();" style="width: 1.4rem;height: 0.6rem;" class="layui-btn" value="搜索" data-type="reload" />
+								<!--<button onclick="select()" style="width: 1.4rem;height: 0.6rem;" class="layui-btn" data-type="reload">搜索</button>-->
+							</td>
+						</tr>
+					</table>
+					<br />
+				</div>
+			</div>
+			
+			<a onclick="backTop()" class="gotop" id="goTop" data-title="返回顶部" style="display: none; position: fixed;" ><i class="layui-icon layui-icon-top" style="font-size: 50px; color: #1E9FFF;"></i></a>
+			
+			<div id="demo" style="overflow-y:scroll;" class="layui-row">
+				<br />
+				<br />
+				<br />
+				<br />
+				<br />
+				<ul id="typenav" style="overflow-x: scroll;white-space: nowrap;" class="flow-default layui-nav layui-bg-green" lay-filter="">
+				</ul>
+				<br />
+				<div class="layui-carousel" id="test1" lay-filter="test1">
+					<div style="border-radius: 10px;" carousel-item="">
+						<div><img style="width: 100%;" src="img/背景.jpg"/></div>
+						<div><img style="width: 100%;" src="img/背景.jpg"/></div>
+						<div><img style="width: 100%;" src="img/背景.jpg"/></div>
+						<div><img style="width: 100%;" src="img/背景.jpg"/></div>
+						<div><img style="width: 100%;" src="img/背景.jpg"/></div>
+					</div>
+				</div>
+				<ul id="maxdiv">
+				</ul>
+			</div>
+			<br />
+			<br />
+			<br />
+
+			<div class="main_nav_bottom">
+				<nav class="navbar navbar-default navbar-fixed-bottom">
+					<div class="container" align="center">
+						<style>
+							.nav-tabs {
+								text-align: center;
+								height: 50px;
+								line-height: 15px;
+								font-size: 20px;
+							}
+						</style>
+						<ul class="nav nav-tabs nav-tabs-justified">
+							<div class="row" align="center">
+								<div class="col-md-4 col-sm-4 col-xs-4" align="center">
+									<li>
+										<br />
+										<div id="collection" onclick="window.location='goods_collection.html';">
+											&nbsp;
+											<i class="layui-icon layui-icon-rate" style="font-size: 25px; color: #000000;">
+													<br />
+													<font size="2">&nbsp;我的收藏</font>
+												</i>
+										</div>
+									</li>
+								</div>
+								<div class="col-md-4 col-sm-4 col-xs-4" align="center">
+									<br />
+									<div id="released" onclick="checkLogin()">
+										&nbsp;
+										<i class="layui-icon layui-icon-add-circle" style="font-size: 25px; color: #000000;">
+													<br />
+													<font size="2">&nbsp;我要发布</font>
+												</i>
+									</div>
+								</div>
+								<div class="col-md-4 col-sm-4 col-xs-4" align="center">
+									<br />
+									<div id="information" onclick="window.location='user_information.html';">
+										&nbsp;
+										<i class="layui-icon layui-icon-user" style="font-size: 25px; color: #000000;">
+													<br />
+													<font size="2">&nbsp;我的信息</font>
+										</i>
+									</div>
+								</div>
+							</div>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</div>
+		<script src="../assets/layui.js"></script>
+		<script>
+			layui.use('carousel', function() {
+				var carousel = layui.carousel;
+				//建造实例
+				carousel.render({
+					elem: '#test1',
+					height:'150px',
+					width: '100%' ,//设置容器宽度
+					arrow: 'always', //始终显示箭头
+					anim: 'default' //切换动画方式
+				});
+			});
+		</script>
+		<script>
+			function checkLogin() {
+				var username = sessionStorage.getItem('userName');
+				if(username == null) {
+					alert('请先登录');
+					window.location.href = 'login.html';
+				} else {
+					alert('请按规定填写下列信息');
+					window.location.href = 'goods_released.html';
+				}
+			}
+			$(function() {
+				var html = '';
+				var typenav = document.getElementById('typenav');
+				$.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/CommodityType/Customer/findAllCommodityType",
+					async: false,
+					contentType: "application/json",
+					dataType: "json",
+					success: function(data) {
+						//								alert(JSON.stringify(data));
+						for(i = 0; i < data.data.length; i++) {
+							console.log(data);
+							html +=
+								`<li class="layui-nav-item">` +
+								`<a style="font-size: 17px;" href='select_kinds.html?cId=` + `${data.data[i].id}` + `&typeName=` + `${data.data[i].typeName}` + `'>` + `${data.data[i].typeName}` + `</a>` +
+								`</li>`;
+						}
+						typenav.innerHTML = html;
+					},
+					error: function(error) {
+						alert("加载失败，服务器繁忙！");
+
+					}
+
+				});
+			})
+		</script>
+		<script>
+			layui.use('flow', function() {
+				var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+				var flow = layui.flow;
+				flow.load({
+					elem: '#maxdiv' //指定列表容器
+						,
+					isAuto: false,
+					isLazyimg: true,
+					done: function(page, next) { //到达临界点（默认滚动触发），触发下一页
+						var lis = [];
+						//以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+						$.get('http://cxuniversity.top:8010/flea/Commodity/findCommodityByPage?page=' + page, function(res) {
+							//假设你的列表返回在data集合中
+							//					        alert(JSON.stringify(res.data));
+							console.log(res);
+							layui.each(res.data, function(index, item) {
+								console.log(item);
+								lis.push(
+									`<li class="layui-col-xs6 layui-col-sm6 layui-col-md4" onclick="window.location='goods_details.html?id=` + `${res.data[index].id}` + `';">` +
+									`<div class="grid-demo grid-demo-bg1 surface-div1">` +
+									`<div id="surface-div1">` +
+									`<img lay-src="` +
+									`http://cxuniversity.top:8010/flea/` +
+									`${item.picture1}` +
+									`" class="surface-img" />` +
+									`</div>` +
+									`<div style="font-size: 15px;">` +
+									`<div style="float:left;width: 50%;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">&nbsp;&nbsp;${res.data[index].commodityName}</div>` +
+									`<div style="width: 45%;overflow: hidden;text-overflow: ellipsis;color: red;float: right;margin: 0 0 0 0">￥${res.data[index].commodityPrice}</div>` +
+									`</div>` +
+									`</div>` +
+									`</li>`
+								);
+							});
+
+							//执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+							//pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+							next(lis.join(''), page < Math.ceil(res.count / 10));
+						});
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

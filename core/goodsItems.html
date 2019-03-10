@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>商品分类管理</title>
+		<link rel="stylesheet" href="../assets/css/layui.css" media="all">
+		<link rel="stylesheet" href="../assets/css/view.css" />
+		<link rel="stylesheet" href="../css/table.css" />
+		<script src="../js/jquery-3.3.1.min.js"></script>
+	</head>
+
+	<body>
+		<div class="layui-content">
+			<div class="layui-row">
+				<div class="layui-card">
+					<div class="layui-card-header">
+						<div class="demoTable">
+							搜索商品：
+							<div class="layui-inline">
+								<input class="layui-input" name="keyword" id="goodsName" autocomplete="off">
+							</div>
+							<button class="layui-btn" data-type="reload" onclick="find()">搜索</button>
+							<script>
+								function find() {
+									var goodsName = document.getElementById("goodsName").value;
+								}
+							</script>
+						</div>
+					</div>
+					<div class="layui-row">
+						<div class="layui-card">
+							<div class="layui-card-body">
+								<div class="form-box">
+									<div class="layui-form layui-form-item" style="width: 1000px;">
+										<table id="demo" lay-filter="test"></table>
+										<script type="text/html" id="barDemo">
+											<button class="layui-btn layui-btn-xs" lay-event="edit">编辑</button>
+											<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+											<!--<a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>-->
+										</script>
+										<div class="site-demo-button" id="layerDemo" style="margin-bottom: 0;">
+											<button class="layui-btn layui-btn-normal" data-type="auto" data-method="offset">添加分类</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../assets/layui.js"></script>
+
+		<script>
+			layui.use('table', function() {
+				var table = layui.table;
+				var permissionName = 'CKXPFL';
+				//第一个实例
+				table.render({
+					elem: '#demo',
+					id: 'listReload',
+					height: 312,
+					url: 'http://cxuniversity.top:8010/flea/CommodityType/selectAllType', //数据接口
+					where: {
+						permissionName: permissionName,
+						permissionList: localStorage.getItem('permissionList')
+					},
+					method: 'POST',
+					contentType: 'application/json',
+					page: true //开启分页
+						,
+					cols: [
+						[ //表头
+							{
+								field: 'id',
+								title: 'Id',
+								width: '4%',
+								align: 'center'
+							}, {
+								field: 'typeName',
+								title: '分类名称',
+								width: '12%',
+								align: 'center'
+							}, {
+								field: 'statusCode',
+								title: '分类状态',
+								width: '10%',
+								event: 'setSign',
+								align: 'center'
+							}, {
+								field: 'creatData',
+								title: '创建日期',
+								width: '16%',
+								align: 'center'
+							}, {
+								field: 'creatBy',
+								title: '创建人',
+								width: '12%',
+								align: 'center'
+							}, {
+								field: 'updataData',
+								title: '修改日期',
+								width: '16%',
+								align: 'center'
+							}, {
+								field: 'updataBy',
+								title: '修改人',
+								width: '12%',
+								align: 'center'
+							}, {
+								field: 'right',
+								title: '操作',
+								width: '18%',
+								toolbar: "#barDemo",
+								align: 'center'
+							}
+						]
+					],
+
+				});
+
+				//监听头工具栏事件
+				table.on('toolbar(test)', function(obj) {
+					var checkStatus = table.checkStatus(obj.config.id),
+						data = checkStatus.data; //获取选中的数据
+					switch(obj.event) {
+						case 'add':
+							layer.msg('添加');
+							break;
+						case 'update':
+							layer.alert('编辑 [id]：' + checkStatus.data[0].id);
+							break;
+						case 'delete':
+							layer.msg('删除');
+							break;
+						case 'change':
+							layer.alert('转换[id]：' + checkStatus.data[0].id);
+					};
+				});
+
+				//监听行工具事件
+				table.on('tool(test)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+					var admin = obj.data; //获得当前行数据
+					layEvent = obj.event; //获得 lay-event 对应的值
+					if(layEvent === 'detail') {
+						layer.msg('查看操作');
+					} else if(layEvent === 'del') {
+						$.ajax({
+							type: "post",
+							url: "http://cxuniversity.top:8010/flea/CommodityType/deleteCommodityType",
+							contentType: 'application/json',
+							async: false,
+							data: JSON.stringify({
+								"permissionList": localStorage.getItem('permissionList'),
+								"permissionName": "SCSPFL",
+								"commodityTypeId": admin.id
+							}),
+							success: function(result) {
+								if(obj.data.statusCode == "不存在") {
+									layer.msg('此商品分类已经删除');
+								} else {
+									layer.confirm('真的删除行么', function(index) {
+										layer.close(index);
+										table.on('tool(test)', function(obj) {
+											var data = obj.data;
+											if(obj.event === 'setSign') {
+												layer.prompt({
+													formType: 2,
+													title: '修改 商品状态 为 [' + data.id + '] 的用户签名',
+													value: data.sign
+												}, function(value, index) {
+													layer.close(index);
+
+													//这里一般是发送修改的Ajax请求
+
+													//同步更新表格和缓存对应的值
+													obj.update({
+														sign: value
+													});
+												});
+											}
+										});
+										layer.msg('删除成功');
+										//向服务端发送删除指令
+									});
+								}
+								//如果传送成功，后端会返回data
+							},
+							error: function(error) {
+								alert("a");
+							}
+						});
+					} else if(layEvent === 'edit') {
+						layer.msg('编辑操作');
+						var type = 1;
+						var adminName = localStorage["adminName"];
+						var typeName_new;
+						var id = obj.data.id;
+						//獲取當前系統時間
+						var date = new Date();
+						var seperator1 = "-";
+						var seperator2 = ":";
+						var month = date.getMonth() + 1;
+						var strDate = date.getDate();
+						if(month >= 1 && month <= 9) {
+							month = "0" + month;
+						}
+						if(strDate >= 0 && strDate <= 9) {
+							strDate = "0" + strDate;
+						}
+						var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+							" " + date.getHours() + seperator2 + date.getMinutes() +
+							seperator2 + date.getSeconds();
+						layer.open({
+							type: 1,
+							title: '商品分类信息',
+							area: ['500px', '300px'],
+							content: '<div style="text-align:center;padding-top:60px;">' +
+								'<table style="margin:auto">' +
+								'<tr>' +
+								'<td class="td-left">商品分类状态：</td>' +
+								'<td class="td-left">' +
+								'<input type="radio" name="status" value="10" checked="checked">存在</input>' +
+								'<input type="radio" name="status" value="20">不存在</input>' +
+								'</td>' +
+								'</tr>' +
+								'<tr>' +
+								'<td class="td-left">分类名称：</td>' +
+								'<td class="td-left">' +
+								'<input id="typeName" type="text"></input>' +
+								'</td>' +
+								'</tr>' +
+								'</table>' +
+								'</div>',
+							btn: ['确认修改', '取消修改'] //只是为了演示
+								,
+							yes: function(index, layero) {
+								var radio = document.getElementsByName("status");
+								var checkstatus;
+								for(i = 0; i < radio.length; i++) {
+									if(radio[i].checked) {
+										checkstatus = radio[i].value;
+									}
+								};
+								if(document.getElementById("typeName").value != '') {
+									typeName_new = document.getElementById("typeName").value;
+								} else {
+									typeName_new = obj.data.typeName;
+								};
+								$.ajax({
+									url: 'http://cxuniversity.top:8010/flea/CommodityType/updateCommodityType',
+									contentType: "application/json",
+									data: JSON.stringify({
+										'id': id,
+										'updateBy': localStorage["adminName"],
+										'typeName': typeName_new,
+										'updateData': currentdate,
+										'typeStatus': parseInt(checkstatus),
+										'permissionList': localStorage["permissionList"],
+										'permissionName': "XGSPFL"
+
+									}), //请求的附加参数，用json对象
+									method: 'POST',
+									success: function(res) {
+										layer.closeAll();
+										window.location.reload();
+										layer.msg('修改成功');
+									},
+									error: function() {
+										post_adduser = false; //AJAX失败也需要将标志标记为可提交状态
+										//						layer.close(loading);
+										layer.msg("修改失败", {
+											icon: 5
+										});
+									}
+								});
+							},
+							btn2: function() {
+								layer.closeAll();
+							},
+						});
+						document.getElementById("typeName").placeholder = obj.data.typeName;
+
+					} else if(layEvent === 'conversion') {}
+				});
+
+				//獲取當前系統時間
+				var date = new Date();
+				var seperator1 = "-";
+				var seperator2 = ":";
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				if(month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if(strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+					" " + date.getHours() + seperator2 + date.getMinutes() +
+					seperator2 + date.getSeconds();
+				var active = {
+					setTop: function() {
+						var that = this;
+						//多窗口模式，层叠置顶
+					},
+					offset: function(othis) {
+						var type = othis.data('type'),
+							text = othis.text();
+						var typeName;
+						layer.open({
+							type: 1,
+							title: '添加分类',
+							offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+								,
+							id: 'layerDemo' + type //防止重复弹出
+								,
+							area: ['500px', '300px'],
+							content: '<div style="text-align:center;padding-top:40px;">' +
+								'<table style="margin:auto">' +
+								'<tr>' +
+								'<td class="td-left">分类名称：</td>' +
+								'<td class="td-left">' +
+								'<input id="typeName" type="text" required="required"></input>' +
+								'</td>' +
+								'<tr>' +
+								'<td class="td-left">分类状态：</td>' +
+								'<td class="td-left">' +
+								'<input type="radio" name="status" value="10" checked="checked">存在</input>' +
+								'<input type="radio" name="status" value="20">不存在</input>' +
+								'</td>' +
+								'</tr>' +
+								'</table>' +
+								'</div>' +
+								'<div class="layui-content">' +
+								'<div class="layui-row">' +
+								'<div class="layui-card">' +
+								'<div class="layui-form-item">' +
+								'</div>' +
+								'</div>' +
+								'</div>' +
+								'</div>',
+							btn: ['确认添加', '取消添加'],
+							btnAlign: 'c' //按钮居中
+								,
+							shade: 0 //不显示遮罩
+								,
+							yes: function() {
+								var radio = document.getElementsByName("status");
+								var checkstatus;
+								for(i = 0; i < radio.length; i++) {
+									if(radio[i].checked) {
+										checkstatus = radio[i].value;
+									}
+								};
+								typeName_new = document.getElementById("typeName").value;
+								$.ajax({
+									url: 'http://cxuniversity.top:8010/flea/CommodityType/insertCommodityType',
+									contentType: "application/json",
+									data: JSON.stringify({
+										'createBy': localStorage["adminName"],
+										'typeName': typeName_new,
+										'createData': currentdate,
+										'typeStatus': parseInt(checkstatus),
+										'permissionList': localStorage["permissionList"],
+										'permissionName': "TJSPFL"
+
+									}), //请求的附加参数，用json对象
+									method: 'POST',
+									success: function(res) {
+										layer.closeAll();
+										window.location.reload();
+										layer.msg('添加成功');
+									},
+									error: function() {
+										post_adduser = false; //AJAX失败也需要将标志标记为可提交状态
+										//						layer.close(loading);
+										layer.msg("添加失败", {
+											icon: 5
+										});
+									}
+								});
+							}
+
+						});
+					}
+				};
+
+				$('#layerDemo .layui-btn').on('click', function() {
+					var othis = $(this),
+						method = othis.data('method');
+					active[method] ? active[method].call(this, othis) : '';
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

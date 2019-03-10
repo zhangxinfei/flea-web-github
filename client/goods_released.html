@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>上传商品</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../assets/css/layui.css" media="all">
+		<link rel="stylesheet" href="css/bstrp_css/bootstrap.css" />
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+
+		<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+		<style>
+			.rmb {
+				width: 30%;
+				float: left;
+				font-size: 27px;
+			}
+			
+			.table th,
+			.table td {
+				text-align: center;
+				/*height: 38px;*/
+			}
+			
+			.move_right {
+				text-align: right;
+			}
+			
+			textarea {
+				width: 174px;
+			}
+			
+			.juzhong {
+				margin-top: 5px;
+			}
+			
+			.move_left {
+				text-align: left;
+			}
+		</style>
+	</head>
+	<style>
+		.head {
+			z-index: 9999;
+			position: fixed;
+			width: 100%;
+			top: 0;
+		}
+		
+		.heda-div {
+			height: 53px;
+			background-color: #009688;
+			color: white;
+			font-size: 40px;
+			text-align: left;
+		}
+		
+		.head-div-title {
+			font-size: 25px;
+			margin: -38px auto;
+			text-align: center;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="css/webuploader.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script type="text/javascript" src="../js/jquery-3.3.1.js"></script>
+	<script type="text/javascript" src="js/webuploader.js"></script>
+	<script type="text/javascript" src="js/upload.js"></script>
+	<body>
+		<div class="head">
+			<div class="heda-div">
+				<i class="layui-icon layui-icon-left" style="font-size: 25px; color: #FFFFFF;" onclick="javascript:history.go(-1);">返回</i>
+				<div class="head-div-title">填写信息</div>
+			</div>
+		</div>
+		<div id="maxdiv" class="layui-container" style="background-image: url(img/background.gif)">
+
+			<div class="layui-row">
+				<br />
+				<br />
+				<br />
+				<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+					<div class="grid-demo grid-demo-bg1">
+						<form action="goods_released_photos.html" method="post" id="form1" class="layui-form">
+							<table class="table">
+								<tr>
+									<td class="move_right">
+										商品分类：
+									</td>
+									<td>
+										<select id="Slt_type">
+											<!--	<option value="life">生活</option>-->
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td class="move_right">
+										商品名称：
+									</td>
+									<td>
+										<input class="layui-input" type="text" id="commodityName" lay-verify="required|commodityName" placeholder="此项必填" />
+									</td>
+								</tr>
+								<tr>
+									<td class="move_right">
+										商品描述：
+									</td>
+									<td>
+										<textarea class="layui-textarea" style="resize:none;" id="commodityDescribe" lay-verify="required|commodityDescribe" placeholder="此项必填"></textarea>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										
+									</td>
+								</tr>
+								<tr>
+									<td class="move_right">
+										商品原价：
+									</td>
+									<td>
+										<div class="rmb">￥</div>
+										<input style="float: right;width: 70%;" class="layui-input" type="text" id="commodityCost" lay-verify="required|commodityCost" placeholder="此项必填" />
+									</td>
+								</tr>
+								<tr>
+									<td class="move_right">
+										商品售价：
+									</td>
+									<td>
+										<div class="rmb">￥</div>
+										<input style="float: right;width: 70%;" class="layui-input" type="text" id="commodityPrice" lay-verify="required|commodityPrice" placeholder="此项必填" />
+									</td>
+								</tr>
+								<tr>
+									<td class="move_right">
+										所在地址：
+									</td>
+									<td>
+										<input class="layui-input" type="text" id="commodityAddress" lay-verify="required|commodityAddress" placeholder="示例：宿11-551" />
+									</td>
+								</tr>
+								<tr>
+									<td class="move_right">
+										联系QQ：
+									</td>
+									<td>
+										<input class="layui-input" type="text" id="userQq" lay-verify="required|userQq" placeholder="此项必填" />
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;">
+										<!--<input type="submit" value="发布" id="sbm" class="juzhong layui-btn" onclick="publish()"/>-->
+										<button id="sbm" lay-submit="" lay-filter="submit_button" class="juzhong layui-btn">下一步</button>
+									</td>
+									<td style="text-align: right;">
+										<input type="reset" onclick="javascript:history.go(-1);" value="取&nbsp;&nbsp;消" class="juzhong layui-btn" />
+									</td>
+									<!--<input type="hidden" id="p_id" />-->
+								</tr>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<br /><br />
+		<script src="../assets/layui.js" charset="utf-8"></script>
+
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function() {
+				var form = layui.form,
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate;
+
+				//自定义验证规则
+				form.verify({
+					commodityName: function(value) {
+						var commodityName = document.getElementById('commodityName').value;
+						var reg = /^[0-9]*$/;
+						if(reg.test(commodityName)) {
+							return '商品名称不能全是数字';
+						}
+					},
+					commodityDescribe: function(value) {
+						if(value.length < 5) {
+							return '商品描述至少得5个字符';
+						}
+					},
+					commodityCost: function(value) {
+						var commodityCost = document.getElementById('commodityCost').value;
+						var reg = /^[0-9]*$/;
+						if(!reg.test(commodityCost)) {
+							return '商品售格只能是数字';
+						}
+					},
+					commodityPrice: function(value) {
+						var commodityPrice = document.getElementById('commodityPrice').value;
+						var reg = /^[0-9]*$/;
+						if(!reg.test(commodityPrice)) {
+							return '商品原价只能是数字';
+						}
+					},
+					commodityAddress: function(value) {
+						if(value.length > 12) {
+							return '地址信息不超过12个字符';
+						}
+					},
+					userQq: [
+						/^[1-9][0-9]{4,9}$/,
+						'请输入正确的QQ号码'
+					],
+					content: function(value) {
+						layedit.sync(editIndex);
+					}
+				});
+				form.on('submit(submit_button)', function(data) {
+					var commodityName = document.getElementById("commodityName").value;
+					var commodityDescribe = document.getElementById("commodityDescribe").value;
+					var userIphone = sessionStorage.getItem("userName");
+					var typeId = document.getElementById('Slt_type').value;
+//					var commodityPhoto = document.getElementById('p_id').value;
+					var commodityCost = document.getElementById('commodityCost').value;
+					var commodityPrice = document.getElementById("commodityPrice").value;
+					var commodityAddress = document.getElementById("commodityAddress").value;
+					var userQq = document.getElementById("userQq").value;
+					var createBy = sessionStorage.getItem("userName");
+//					alert('succ');
+					sessionStorage.setItem('commodityName',commodityName);
+					sessionStorage.setItem('commodityDescribe',commodityDescribe);
+					sessionStorage.setItem('userIphone',userIphone);
+					sessionStorage.setItem('typeId',typeId);
+					sessionStorage.setItem('commodityCost',commodityCost);
+					sessionStorage.setItem('commodityPrice',commodityPrice);
+					sessionStorage.setItem('commodityAddress',commodityAddress);
+					sessionStorage.setItem('userQq',userQq);
+					sessionStorage.setItem('createBy',createBy);
+					return true;
+				});
+			});
+		</script>
+		<script>
+			//獲取當前系統時間
+			function getDate (){
+				var date = new Date();
+				var seperator1 = "-";
+				var seperator2 = ":";
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				if(month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if(strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+					" " + date.getHours() + seperator2 + date.getMinutes() +
+					seperator2 + date.getSeconds();
+				var createData = currentdate;
+				return createData;
+			}
+			
+			/*
+			layui.use('upload', function() {
+				var $ = layui.jquery,
+					upload = layui.upload;
+				let files;
+				//多图片上传
+				upload.render({
+					elem: '#test2',
+					url: 'http://cxuniversity.top:8010/flea/Commodity/uploadImages',
+					multiple: true,
+					accept: 'file',
+					auto: false,
+					bindAction: '#sbm',
+					number: 3,
+					field: "file",
+					choose: function(obj) { //选择文件后的回调函数     
+						files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+						let exceedLimit = false;
+						var count = 0;
+						for(let x in files) {
+							count++;
+							if(count > 3) {
+								exceedLimit = true;
+								delete files[x];
+								count--;
+							}
+						}
+						if(count == 0) {
+							document.getElementById('sbm').disabled = true;
+						}
+						if(exceedLimit) {
+							layer.msg('只能上传三张图片!', {
+								icon: 3
+							});
+						} else {
+							//预读本地文件示例，不支持ie8
+							obj.preview(function(index, file, result) {
+								$('#demo2').append('<img src="' + result + '" alt="' + file.name + '" class="layui-upload-img" style="width=93px;height=93px;">')
+							});
+						}
+					},
+					before: function(obj) {
+						this.data = {
+							"createData": createData
+						};
+					},
+					allDone: function(obj) {　　　　　　　
+						alert('发布成功');　　　　　
+						location.href = "index.html";
+					},
+					　　　　　　error: function() {　　　　　　　　
+						layer.alert("上传成功!", {
+							time: 5000
+						});　　　　　　
+					},
+					done: function(res, index, upload) {
+
+						console.log(JSON.stringify(res));
+					}
+				});
+			});
+			*/
+			/*
+			function publish() {
+				var commodityName = document.getElementById("commodityName").value;
+				var commodityDescribe = document.getElementById("commodityDescribe").value;
+				var userIphone = sessionStorage.getItem("userName");
+				var typeId = document.getElementById('Slt_type').value;
+				var commodityPhoto = document.getElementById('p_id').value;
+				var commodityCost = document.getElementById('commodityCost').value;
+				var commodityPrice = document.getElementById("commodityPrice").value;
+				var commodityAddress = document.getElementById("commodityAddress").value;
+				var userQq = document.getElementById("userQq").value;
+				var createBy = sessionStorage.getItem("userName");
+				jQuery.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/Commodity/Customer/releaseCommodity", //处理的servlet的url
+					contentType: "application/json",
+
+					data: JSON.stringify({
+						"commodityName": commodityName,
+						"commodityDescribe": commodityDescribe,
+						"commodityPrice": commodityPrice,
+						"commodityAddress": commodityAddress,
+						"userIphone": userIphone,
+						"userQq": userQq,
+						"typeId": typeId,
+						"createData": currentdate,
+						"commodityPhoto": currentdate,
+						"commodityCost": commodityCost,
+					}),
+					async: false,
+					dataType: "json",
+					success: function(data) {
+						//						layer.msg("发布成功");
+						//						layer.open({
+						//							content: '注册成功请登录！',
+						//							btn: ['确认', '取消'],
+						//							yes: function(index, layero) {
+						//								window.location.href = 'login.html';
+						//							},
+						//							btn2: function(index, layero) {
+						//
+						//							},
+						//							cancel: function() {
+						//								//右上角关闭回调
+						//							}
+						//						});
+					},
+					error: function(error) {
+						alert("点个失敗的赞吧");
+
+					}
+				});
+
+			}*/
+			$(function(){
+				var maxdiv = document.getElementById('maxdiv');
+				var username = sessionStorage.getItem('userName');
+				if(username==null){
+					maxdiv.innerHTML = `<br/><br/><br/><div style='margin: 10px auto;text-align: center;' id="logintip">请先<a style='color: #1b79dd;' href = "login.html">登录</a></div>`;
+				}
+			});
+			$(function() {
+				var html = '';
+				var chk = document.getElementById('Slt_type');
+				jQuery.ajax({
+					type: "post",
+					url: "http://cxuniversity.top:8010/flea/CommodityType/Customer/findAllCommodityType", //处理的servlet的url
+					contentType: "application/json",
+					async: false,
+					dataType: "json",
+					success: function(data) {
+						//		alert(JSON.stringify(data));
+						for(i = 0; i < data.data.length; i++) {
+
+							html += '<option value="' + data.data[i].id + '"> ' + data.data[i].typeName + ' </option>'
+
+						}
+						if(chk!=null){
+							chk.innerHTML = html;
+						}
+						
+					},
+					error: function(error) {
+						//		alert("点个失败的赞吧");
+
+					}
+
+				});
+			})
+		</script>
+
+	</body>
+
+</html>
